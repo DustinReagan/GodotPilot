@@ -1,0 +1,216 @@
+syntax = "proto3";
+
+import "google/protobuf/descriptor.proto";
+
+option csharp_namespace = "GodotPilotPlugin.Grpc";
+package nodetools;
+
+// Custom options for documentation
+extend google.protobuf.MethodOptions {
+  string method_description = 50000;
+}
+
+extend google.protobuf.FieldOptions {
+  string field_description = 50001;
+}
+
+// a message with no fields, used for methods that need no parameters
+message Empty {}
+
+// a response containing a list of node paths
+message NodesResponse {
+  repeated string nodes = 1;
+}
+
+// a response containing a list of node types
+message NodeTypesResponse {
+  repeated string types = 1;
+}
+
+// request containing a name parameter
+message NameRequest {
+  string name = 1 [(field_description) = "the name of the nodes to find"];
+}
+
+// request for create node
+message CreateNodeRequest {
+  string typeName = 1 [(field_description) = "the type of node to create (must exist in GetNodeTypes tool)"];
+  string parentPath = 2 [(field_description) = "the absolute path of the desired parent node"];
+  string name = 3 [(field_description) = "the desired name of the new node"];
+}
+
+// request for any operation that needs a single node path
+message PathRequest {
+  string path = 1 [(field_description) = "the absolute path of the node to affect"];
+}
+
+// request for renaming a node
+message RenameNodeRequest {
+  string path = 1 [(field_description) = "the absolute path of the node to rename"];
+  string newName = 2 [(field_description) = "the new name for the node"];
+}
+
+// request for changing a node type
+message ChangeNodeTypeRequest {
+  string path = 1 [(field_description) = "the absolute path of the node to change"];
+  string newType = 2 [(field_description) = "the new type for the node (must exist in GetNodeTypes)"];
+}
+
+// request for duplicating a node
+message DuplicateNodeRequest {
+  string path = 1 [(field_description) = "the absolute path of the node to duplicate"];
+  string newName = 2 [(field_description) = "the desired name of the new node"];
+}
+
+// request for setting a node property
+message SetNodePropertyRequest {
+  string path = 1 [(field_description) = "the absolute path of the node to set the property on"];
+  string propertyName = 2 [(field_description) = "the name of the property to set"];
+  string value = 3 [(field_description) = "the value to set the property to as a string"];
+}
+
+// request for selecting nodes
+message SelectNodesRequest {
+  repeated string paths = 1 [(field_description) = "the absolute paths of the nodes to select"];
+}
+
+// request for reparenting nodes
+message ReparentNodesRequest {
+  repeated string paths = 1 [(field_description) = "the absolute paths of the nodes to reparent"];
+  string parentPath = 2 [(field_description) = "the absolute path of the parent node"];
+}
+
+// request for copying node properties
+message CopyNodePropertiesRequest {
+  string sourcePath = 1 [(field_description) = "the absolute path of the source node"];
+  repeated string targetPaths = 2 [(field_description) = "the absolute paths of the target nodes"];
+}
+
+// generic response for operations that return a status message
+message OperationResponse {
+  string result = 1;
+}
+
+// request for getting nodes by type
+message NodeTypeRequest {
+  string typeName = 1 [(field_description) = "the type of nodes to find"];
+}
+
+// request for creating animation
+message CreateAnimationRequest {
+  string animatedSpritePath = 1 [(field_description) = "the absolute path of the AnimatedSprite2D node"];
+  string animationName = 2 [(field_description) = "the name of the animation to create"];
+  optional float fps = 3 [(field_description) = "the speed of the animation in frames per second"];
+}
+
+// add a message for node properties
+message PropertiesResponse {
+  map<string, string> properties = 1 [(field_description) = "map of node property names to their values"];
+}
+
+// request for deleting animation
+message DeleteAnimationRequest {
+  string animatedSpritePath = 1 [(field_description) = "the absolute path of the AnimatedSprite2D node"];
+  string animationName = 2 [(field_description) = "the name of the animation to delete"];
+}
+
+// request for setting animation speed
+message SetAnimationSpeedRequest {
+  string animatedSpritePath = 1 [(field_description) = "the absolute path of the AnimatedSprite2D node"];
+  string animationName = 2 [(field_description) = "the name of the animation to set the speed of"];
+  float fps = 3 [(field_description) = "the speed of the animation in frames per second"];
+}
+
+// request for renaming animation
+message RenameAnimationRequest {
+  string animatedSpritePath = 1 [(field_description) = "the absolute path of the AnimatedSprite2D node"];
+  string oldAnimationName = 2 [(field_description) = "the name of the animation to rename"];
+  string newAnimationName = 3 [(field_description) = "the new name for the animation"];
+}
+
+// response containing animation names
+message AnimationNamesResponse {
+  repeated string names = 1;
+}
+
+service NodeToolService {
+  rpc GetAllNodes(Empty) returns (NodesResponse) {
+    option (method_description) = "Returns the absolute paths of all nodes in the scene";
+  }
+
+  rpc GetSelectedNodes(Empty) returns (NodesResponse) {
+    option (method_description) = "Returns the absolute paths of all currently selected nodes";
+  }
+
+  rpc GetNodesWithName(NameRequest) returns (NodesResponse) {
+    option (method_description) = "Returns the absolute paths of all nodes with the given name";
+  }
+
+  rpc CreateNode(CreateNodeRequest) returns (OperationResponse) {
+    option (method_description) = "Creates a node of the given type, with the given name & parent, and returns the path of the new node";
+  }
+
+  rpc DeleteNode(PathRequest) returns (OperationResponse) {
+    option (method_description) = "Deletes the node at the specified path and returns a status message";
+  }
+
+  rpc RenameNode(RenameNodeRequest) returns (OperationResponse) {
+    option (method_description) = "Renames the node at the specified path and returns a status message";
+  }
+
+  rpc ChangeNodeType(ChangeNodeTypeRequest) returns (OperationResponse) {
+    option (method_description) = "Changes the type of the node at the specified path and returns a status message";
+  }
+
+  rpc DuplicateNode(DuplicateNodeRequest) returns (OperationResponse) {
+    option (method_description) = "Duplicates/Copies the node at the specified path and returns the path of the new node";
+  }
+
+  rpc SetNodeProperty(SetNodePropertyRequest) returns (OperationResponse) {
+    option (method_description) = "Sets the property of the node at the specified path and returns a status message";
+  }
+
+  rpc SelectNodes(SelectNodesRequest) returns (OperationResponse) {
+    option (method_description) = "Selects the nodes at the specified paths";
+  }
+
+  rpc ReparentNodes(ReparentNodesRequest) returns (OperationResponse) {
+    option (method_description) = "Reparents the nodes at the specified paths to the new parent node and returns a status message";
+  }
+
+  rpc CopyNodeProperties(CopyNodePropertiesRequest) returns (OperationResponse) {
+    option (method_description) = "Copies properties from a source node to one or more target nodes and returns a status message";
+  }
+
+  rpc GetNodeTypes(Empty) returns (NodeTypesResponse) {
+    option (method_description) = "Returns the types of nodes that can be created";
+  }
+
+  rpc GetAllNodesByType(NodeTypeRequest) returns (NodesResponse) {
+    option (method_description) = "Returns the absolute paths of all nodes of the given type";
+  }
+
+  rpc GetNodeProperties(PathRequest) returns (PropertiesResponse) {
+    option (method_description) = "Returns the properties of the node at the specified path";
+  }
+
+  rpc CreateAnimation(CreateAnimationRequest) returns (OperationResponse) {
+    option (method_description) = "Creates an animation for the given AnimatedSprite2D node and returns a status message";
+  }
+
+  rpc DeleteAnimation(DeleteAnimationRequest) returns (OperationResponse) {
+    option (method_description) = "Deletes the animation with the given name from the given AnimatedSprite2D node and returns a status message";
+  }
+
+  rpc SetAnimationSpeed(SetAnimationSpeedRequest) returns (OperationResponse) {
+    option (method_description) = "Sets the speed (fps) of the animation with the given name from the given AnimatedSprite2D node and returns a status message";
+  }
+
+  rpc RenameAnimation(RenameAnimationRequest) returns (OperationResponse) {
+    option (method_description) = "Renames the animation with the given name from the given AnimatedSprite2D node and returns a status message";
+  }
+
+  rpc GetAnimationNames(PathRequest) returns (AnimationNamesResponse) {
+    option (method_description) = "Returns the names of all animations for the given AnimatedSprite2D node";
+  }
+}

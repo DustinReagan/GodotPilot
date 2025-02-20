@@ -1,0 +1,36 @@
+[gd_scene load_steps=2 format=3 uid="uid://bg13ay2k2sqy0"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_l5slm"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"Walk_Back",
+"speed": 10.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"Walk_Front",
+"speed": 10.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"Walk_Left",
+"speed": 10.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"Walk_Right",
+"speed": 10.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="RootNode2D" type="Node2D"]
+
+[node name="Fred" type="Node2D" parent="."]
+
+[node name="Player_1" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_l5slm")

@@ -1,0 +1,46 @@
+<Project Sdk="Godot.NET.Sdk/4.3.0">
+  <PropertyGroup>
+    <LangVersion>11.0</LangVersion>
+    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net7.0</TargetFramework>
+    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'ios' ">net8.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <RootNamespace>GodotPilotPlugin</RootNamespace>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="Contrib.Grpc.Core.M1" Version="2.46.7" />
+    <PackageReference Include="Grpc.Core" Version="2.46.6">
+      <RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
+    </PackageReference>
+
+
+    <PackageReference Include="Ollama" Version="1.14.1-dev.1" />
+    <PackageReference Include="org.k2fsa.sherpa.onnx" Version="1.10.41" />
+    <PackageReference Include="PortAudioSharp2" Version="1.0.4" />
+    <PackageReference Include="Google.Protobuf" Version="3.27.0" />
+
+    <PackageReference Include="Grpc.Tools" Version="2.67.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json.Schema" Version="4.0.1" />
+    <PackageReference Include="Grpc.Core.NativeDebug" Version="2.46.6" />
+    <PackageReference Include="Grpc.Core.Api" Version="2.46.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- include the proto file so that the grpc tools generate the required classes -->
+    <Protobuf Include="addOns/GodotPilot/Grpc/Protos/NodeTools.proto" GrpcServices="Server" />
+  </ItemGroup>
+
+
+</Project>
+
